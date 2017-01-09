@@ -1,9 +1,31 @@
 
-angular.module('GravadorCtrl', []).controller('GravadorController', function ($scope, $location) {
+angular.module('GravadorCtrl', []).controller('GravadorController', function ($scope, $location, hotkeys) {
+
+	hotkeys.add(
+		{
+			combo: 'ctrl+q',
+			description: 'Este atalho inicia à gravação do áudio',
+			callback: () => {
+				$scope.iniciaGravacao();
+			}
+		});
+
+	hotkeys.add(
+		{
+			combo: 'ctrl+enter',
+			description: 'Este atalho para à gravação do áudio',
+			callback: () => {
+				$scope.pararGravacao();
+			}
+		});
 
 	var mediaConstraints = {
 		audio: true
 	};
+
+	window.criaContexto = () => {
+		console.log('efetuou criação')
+	}
 
 	var mediaRecorder;
 	var blobURL;
@@ -38,13 +60,13 @@ angular.module('GravadorCtrl', []).controller('GravadorController', function ($s
 		mediaRecorder.stream.stop();
 	}
 
-	$(function () {
+	$(() => {
 
-		$(".play").on("click", function () {
+		$(".play").on("click", () => {
 			navigator.getUserMedia(mediaConstraints, onMediaSuccess, onMediaError);
 		});
 
-		$(".stop").on("click", function () {
+		$(".stop").on("click", () => {
 			mediaRecorder.stop();
 
 			if (window.streamReference) {
@@ -69,6 +91,14 @@ angular.module('GravadorCtrl', []).controller('GravadorController', function ($s
 		});
 
 	});
+
+	$scope.iniciaGravacao = () => {
+		$(".play").trigger("click");
+	};
+
+	$scope.pararGravacao = () => {
+		$(".stop").trigger("click");
+	};
 
 
 });
